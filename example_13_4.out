@@ -1,0 +1,51 @@
+Starting a PBFT simulation...
+view = 1, primary = 1.
+==================================================
+PBFTSys:
+==================================================
+Total number of thread: 13.
+ID of the primary: 1.
+Indices of bad thread:  [1, 3, 10, 12]
+Max lag: 1.000000.
+Backup 0 (G): lag = 0.7626416674373578
+Primary 1 (B): lag = 0.2681950937174824
+Backup 2 (G): lag = 0.7988910272278015
+Backup 3 (B): lag = 0.007109085310149088
+Backup 4 (G): lag = 0.6189472311335518
+Backup 5 (G): lag = 0.2568464014016154
+Backup 6 (G): lag = 0.7372260819737777
+Backup 7 (G): lag = 0.4173404401772063
+Backup 8 (G): lag = 0.5485740140028598
+Backup 9 (G): lag = 0.8318076902666911
+Backup 10 (B): lag = 0.3735463955614169
+Backup 11 (G): lag = 0.7575933318745351
+Backup 12 (B): lag = 0.09628188749007938
+[1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Reply:  {0: 5, 1: 4}
+This round takes  2.89072585105896  second.
+Bad view, change primary.
+view = 2, primary = 2.
+==================================================
+PBFTSys:
+==================================================
+Total number of thread: 13.
+ID of the primary: 2.
+Indices of bad thread:  [1, 3, 10, 12]
+Max lag: 1.000000.
+Backup 0 (G): lag = 0.13222051188219686
+Backup 1 (B): lag = 0.5635643703117399
+Primary 2 (G): lag = 0.7457459793424959
+Backup 3 (B): lag = 0.646409987668554
+Backup 4 (G): lag = 0.7046945677514127
+Backup 5 (G): lag = 0.6784429241556962
+Backup 6 (G): lag = 0.03905683502966928
+Backup 7 (G): lag = 0.8987568736305472
+Backup 8 (G): lag = 0.8553558670489079
+Backup 9 (G): lag = 0.18881933779039928
+Backup 10 (B): lag = 0.5251235510279421
+Backup 11 (G): lag = 0.5717764218422479
+Backup 12 (B): lag = 0.3403981709208638
+[1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1]
+Reply:  {0: 4, 1: 5}
+This round takes  3.692337989807129  second.
+BLOCK is placed.
