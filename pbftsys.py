@@ -6,7 +6,7 @@ from pbftthread import PBFTThread
 
 class PBFTSys:
 
-    def __init__(self, iprimary, request, ntotal, ibad, maxlag, reply):
+    def __init__(self, iprimary, request, ntotal, ibad, maxlag, reply, attack = "invalid", printinfo = False):
         self.iprimary = iprimary
         self.request = request
         self.ntotal = ntotal
@@ -15,23 +15,26 @@ class PBFTSys:
         self.reply = reply
         self.threads = []
         self.messages = {}
+        self.attack = attack
+        self.printinfo = printinfo
 
     def info(self):
         print("==================================================")
         print("PBFTSys:")
         print("==================================================")
-        print("Total number of thread: %d." % self.ntotal)
+        print("Total number of threads: %d." % self.ntotal)
         print("ID of the primary: %d." % self.iprimary)
         print("Indices of bad thread: ", self.ibad)
         print("Max lag: %f." % self.maxlag)
 
     def run(self):
-        self.info()
+        if self.printinfo:
+            self.info()
         self.initMessage()
         #print(self.messages)
         #tlock = threading.Lock()
         for i in range(self.ntotal):
-            self.threads.append(PBFTThread(i, self.messages))
+            self.threads.append(PBFTThread(i, self.messages, self.printinfo))
         for t in self.threads:
             t.start()
 
@@ -48,15 +51,18 @@ class PBFTSys:
 
         for t in self.threads:
             t.join()
-        print(self.messages[-1])
+        if self.printinfo:
+            print(self.messages[-1])
 
     def initMessage(self):
         for i in range(self.ntotal):
             self.messages[i] = {}
             self.messages[i]["tid"] = i
             self.messages[i]["ntotal"] = self.ntotal
+            self.messages[i]["maxlag"] = self.maxlag
             self.messages[i]["primary"] = True if i == self.iprimary else False
             self.messages[i]["bad"] = True if i in self.ibad else False
+            self.messages[i]["attack"] = self.attack if i in self.ibad else None
             self.messages[i]["lag"] = random.uniform(0, self.maxlag)
             self.messages[i]["request"] = self.request if i == self.iprimary else None
             self.messages[i]["prepare"] = []

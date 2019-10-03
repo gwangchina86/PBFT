@@ -1,0 +1,15 @@
+Starting a PBFT simulation...
+ntotal = 13, nbad = 6, maxlag = 0.500000, nsim = 10.
+Sim 0, deltat = 2.218786, status = 1.
+Sim 1, deltat = 2.195318, status = 1.
+Sim 2, deltat = 2.193947, status = 0.
+Sim 3, deltat = 2.144487, status = 1.
+Sim 4, deltat = 1.819522, status = 1.
+Sim 5, deltat = 1.956170, status = 0.
+Sim 6, deltat = 2.224435, status = 0.
+Sim 7, deltat = 2.299961, status = 1.
+Sim 8, deltat = 2.119963, status = 0.
+Sim 9, deltat = 1.709848, status = 0.
+Total time = 20.882437.
+Average time = 2.088244.
+End of the simulation.

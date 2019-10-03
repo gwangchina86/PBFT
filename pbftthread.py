@@ -5,7 +5,7 @@ import time
 
 class PBFTThread (threading.Thread):
 
-    def __init__(self, threadID, messages):
+    def __init__(self, threadID, messages, printinfo = False):
         threading.Thread.__init__(self)
         self.tid = threadID
         self.primary = True if messages[self.tid]["primary"] else False
@@ -14,6 +14,7 @@ class PBFTThread (threading.Thread):
         self.messages = messages
         self.badprimary = False
         #self.tlock = tlock
+        self.printinfo = printinfo
 
     def info(self):
         if self.primary:
@@ -22,7 +23,8 @@ class PBFTThread (threading.Thread):
             print("Backup {} ({}): lag = {}".format(self.tid, "B" if self.bad else "G", self.lag))
 
     def run(self):
-        self.info()
+        if self.printinfo:
+            self.info()
         # send request to the primary
         # the primary multicasts the request to the backups
         # replicas execute the request and send a reply to the client
@@ -36,14 +38,17 @@ class PBFTThread (threading.Thread):
         if self.primary:
             request = self.messages[self.tid]["request"]
             # if the thread is primary, send request to backups
-            time.sleep(self.lag)
             if self.bad:
                 self.badprimary = True
-                request = "block"
+                if self.messages[self.tid]["attack"] == "invalid":
+                    request = "block"
+                else:
+                    time.sleep(5 * self.messages[self.tid]["maxlag"])
             for tid in self.messages.keys():
                 if tid != -1 and tid != self.tid:
                     self.messages[tid]["request"] = request
-        #print(self.tid, " pre_prepared.")
+            if self.printinfo:
+                print("Thread %d is pre-prepared." % self.tid)
         return
 
     def prepare(self):
@@ -51,6 +56,7 @@ class PBFTThread (threading.Thread):
             # the backups receive request from the primary
             while self.messages[self.tid]["request"] == None:
                 pass
+            time.sleep(self.lag)
             self.checkrequest()
             self.messages[self.tid]["prepare"].append(self.tid)
             #print("Thread %d received request." % self.tid)
@@ -60,7 +66,8 @@ class PBFTThread (threading.Thread):
                 if tid != -1:
                     self.messages[tid]["prepare"].append(self.tid)
                     #print(self.tid, " send message to ", tid)
-        #print(self.tid, " prepared.")
+            if self.printinfo:
+                print("Thread %d is prepared." % self.tid)
         return
 
     def commit(self):
@@ -70,15 +77,17 @@ class PBFTThread (threading.Thread):
         while len(self.messages[self.tid]["prepare"]) < 2 * f + 1:
             pass
         self.messages[self.tid]["commit"].append(self.tid)
-        #print("Thread %d is ready to commit." % self.tid)
+        if self.printinfo:
+            print("Thread %d is ready to commit." % self.tid)
         time.sleep(self.lag)
         for tid in self.messages.keys():
             if tid != -1 and tid != self.tid:
                 self.messages[tid]["commit"].append(self.tid)
-        #print(self.tid, " committed.")
+        if self.printinfo:
+            print("Thread %d committed." % self.tid)
 
     def reply(self):
-        if self.bad ^ self.badprimary:
+        if (self.bad ^ self.badprimary) and self.messages[self.tid]["attack"] in ["invalid", None]:
             time.sleep(self.lag)
             self.messages[-1].append(0)
         else:
